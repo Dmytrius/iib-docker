@@ -26,7 +26,7 @@ stop()
 start_iib()
 {
 	echo "----------------------------------------"
-        /opt/ibm/iib-10.0.0.11/iib version
+        /opt/ibm/iib-10.0.0.18/iib version
 	echo "----------------------------------------"
 
         NODE_EXISTS=`mqsilist | grep $NODENAME > /dev/null ; echo $?`

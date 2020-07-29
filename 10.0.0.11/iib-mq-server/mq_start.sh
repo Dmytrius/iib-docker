@@ -31,7 +31,7 @@ start_mq()
           strmqm ${MQ_QMGR_NAME}
           echo "----------------------------------------"
           echo "Creating iib queues"
-          /opt/ibm/iib-10.0.0.11/server/sample/wmq/iib_createqueues.sh $MQ_QMGR_NAME mqbrkrs
+          /opt/ibm/iib-10.0.0.18/server/sample/wmq/iib_createqueues.sh $MQ_QMGR_NAME mqbrkrs
           echo "----------------------------------------"
           echo "Configuring queue manager $MQ_QMGR_NAME"
           source mq-config.sh

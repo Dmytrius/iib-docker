@@ -30,7 +30,7 @@ elif [ "$LICENSE" = "view" ]; then
 		tr*) LICENSE_FILE=Turkish.txt ;;
 		*) LICENSE_FILE=English.txt ;;
 	esac
-	cat /opt/ibm/iib-10.0.0.11/license/$LICENSE_FILE
+	cat /opt/ibm/iib-10.0.0.18/license/$LICENSE_FILE
         cat /opt/mqm/licenses/$LICENSE_FILE
 	exit 1
 else

@@ -1,13 +1,12 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
-LABEL maintainer "Dan Robinson <dan.robinson@uk.ibm.com>"
+LABEL maintainer "Boyko Dmytro <boyko.dmitr@gmail.com>"
 
-LABEL "ProductID"="447aefb5fd1342d5b893f3934dfded73" \
-      "ProductName"="IBM Integration Bus" \
-      "ProductVersion"="10.0.0.11"
+LABEL "ProductName"="IBM Integration Bus" \
+      "ProductVersion"="10.0.0.18"
 
 # The URL to download the MQ installer from in tar.gz format
-ARG MQ_URL=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/mqadv_dev904_ubuntu_x86-64.tar.gz
+ARG MQ_URL=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/mqadv_dev920_ubuntu_x86-64.tar.gz
 
 # The MQ packages to install
 ARG MQ_PACKAGES="ibmmq-server ibmmq-java ibmmq-jre ibmmq-gskit ibmmq-msg-.* ibmmq-client ibmmq-sdk ibmmq-samples ibmmq-ft*"
@@ -18,6 +17,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get install -y --no-install-recommends \
     bash \
     bc \
+    mc \
     ca-certificates \
     coreutils \
     curl \
@@ -35,7 +35,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     sed \
     sudo \
     tar \
+    telnet \
     util-linux \
+    ufw \
   # Download and extract the MQ installation files
   && export DIR_EXTRACT=/tmp/mq \
   && mkdir -p ${DIR_EXTRACT} \ 
@@ -70,13 +72,13 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && sed -i 's/PASS_MIN_DAYS\t0/PASS_MIN_DAYS\t1/' /etc/login.defs \
   && sed -i 's/password\t\[success=1 default=ignore\]\tpam_unix\.so obscure sha512/password\t[success=1 default=ignore]\tpam_unix.so obscure sha512 minlen=8/' /etc/pam.d/common-password
 
-ARG IIB_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/10.0.0.11-IIB-LINUX64-DEVELOPER.tar.gz
+ARG IIB_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/10.0.0.18-IIB-LINUX64-DEVELOPER.tar.gz
 
 # Install IIB V10 Developer edition
 RUN mkdir /opt/ibm && \
     curl $IIB_URL \ 
-    | tar zx --exclude iib-10.0.0.11/tools --directory /opt/ibm && \
-    /opt/ibm/iib-10.0.0.11/iib make registry global accept license silently
+    | tar zx --exclude iib-10.0.0.18/tools --directory /opt/ibm && \
+    /opt/ibm/iib-10.0.0.18/iib make registry global accept license silently
 
 # Configure system
 RUN echo "IIB_10:" > /etc/debian_chroot  && \
@@ -99,7 +101,9 @@ RUN chmod 755 /usr/local/bin/*.sh \
 ENV BASH_ENV=/usr/local/bin/iib_env.sh MQSI_MQTT_LOCAL_HOSTNAME=127.0.0.1 MQSI_DONT_RUN_LISTENER=true LANG=en_US.UTF-8
 
 # Expose default admin port and http ports
-EXPOSE 4414 7800 1414
+EXPOSE 1414:1414 \
+      4414:4414 \
+      7800:7800
 
 USER iibuser
 
